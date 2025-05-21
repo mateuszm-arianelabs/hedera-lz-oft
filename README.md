@@ -19,12 +19,12 @@ After this configuration, the contracts are ready for token transfers. Before in
 
 __Mint tokens on Avalanche Fuji__
 ```bash
-npx hardhat oft:mint --network avalanche-testnet --amount 100 --to 0x4c003D0E477B7b6c950912AD1DD0DB6E253522d1
+npx hardhat oft:mint --network avalanche-testnet --amount <AMOUNT> --to <RECEIVER>
 ```
 
 __Mint tokens on Hedera testnet__
 ```bash
-npx hardhat oft:mint --network hedera-testnet --amount 100 --to 0x4c003D0E477B7b6c950912AD1DD0DB6E253522d1
+npx hardhat oft:mint --network hedera-testnet --amount <AMOUNT> --to <RECEIVER>
 ```
 
 __Send tokens from Avalanche Fuji -> Hedera Testnet__
