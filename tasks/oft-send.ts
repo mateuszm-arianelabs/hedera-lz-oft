@@ -22,13 +22,12 @@ interface SendParam {
 }
 
 // send tokens from a contract on one network to another
-task('oft:sendtwo', 'Sends tokens from either OFT or OFTAdapter')
+task('oft:sendFromFuji', 'Sends tokens from either OFT or OFTAdapter')
     .addParam('to', 'contract address on network B', undefined, types.string)
-    .addParam('toEid', 'destination endpoint ID', undefined, types.eid)
     .addParam('amount', 'amount to transfer in token decimals', undefined, types.string)
     .setAction(async (taskArgs: Args, { ethers, deployments }) => {
         const toAddress = taskArgs.to
-        const eidB = taskArgs.toEid
+        const hederaEid = 40285
 
         // Get the contract factories
         const oftDeployment = await deployments.get('MyOFT')
@@ -47,7 +46,7 @@ task('oft:sendtwo', 'Sends tokens from either OFT or OFTAdapter')
         const oft = oftContract
 
         const sendParam: SendParam = {
-            dstEid: eidB,
+            dstEid: hederaEid,
             to: addressToBytes32(toAddress),
             amountLD: amount,
             minAmountLD: amount,
@@ -60,7 +59,7 @@ task('oft:sendtwo', 'Sends tokens from either OFT or OFTAdapter')
 
         const nativeFee = feeQuote.nativeFee
 
-        console.log(`sending ${taskArgs.amount} token(s) to network ${getNetworkNameForEid(eidB)} (${eidB})`)
+        console.log(`sending ${taskArgs.amount} token(s) to network ${getNetworkNameForEid(hederaEid)} (${hederaEid})`)
 
         const r = await oft.send(sendParam, { nativeFee: nativeFee, lzTokenFee: 0 }, signer.address, {
             value: nativeFee,
@@ -68,13 +67,12 @@ task('oft:sendtwo', 'Sends tokens from either OFT or OFTAdapter')
         console.log(`Send tx initiated. See: https://layerzeroscan.com/tx/${r.hash}`)
     })
 
-task('oft:send', 'Sends tokens from either OFT or OFTAdapter')
+task('oft:sendFromHedera', 'Sends tokens from either OFT or OFTAdapter')
     .addParam('to', 'contract address on network B', undefined, types.string)
-    .addParam('toEid', 'destination endpoint ID', undefined, types.eid)
     .addParam('amount', 'amount to transfer in token decimals', undefined, types.string)
     .setAction(async (taskArgs: Args, { ethers, deployments }) => {
         const toAddress = taskArgs.to
-        const eidB = taskArgs.toEid
+        const fujiEid = 40106
 
         // Get the contract factories
         const oftDeployment = await deployments.get('MyOFT')
@@ -93,7 +91,7 @@ task('oft:send', 'Sends tokens from either OFT or OFTAdapter')
         const oft = oftContract
 
         const sendParam: SendParam = {
-            dstEid: eidB,
+            dstEid: fujiEid,
             to: addressToBytes32(toAddress),
             amountLD: amount,
             minAmountLD: amount,
@@ -106,13 +104,9 @@ task('oft:send', 'Sends tokens from either OFT or OFTAdapter')
 
         const nativeFee = feeQuote.nativeFee
 
-        console.log({ nativeFee })
-
         const adjustedNativeFee = nativeFee.mul(ethers.BigNumber.from(10).pow(10))
 
-        console.log({ adjustedNativeFee })
-
-        console.log(`sending ${taskArgs.amount} token(s) to network ${getNetworkNameForEid(eidB)} (${eidB})`)
+        console.log(`sending ${taskArgs.amount} token(s) to network ${getNetworkNameForEid(fujiEid)} (${fujiEid})`)
 
         const r = await oft.send(sendParam, { nativeFee: nativeFee, lzTokenFee: 0 }, signer.address, {
             value: adjustedNativeFee,
